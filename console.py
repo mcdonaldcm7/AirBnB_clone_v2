@@ -115,19 +115,18 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        args_list = args.split()
-        new_instance = None
+        arg_list = args.split()
         if not args:
             print("** class name missing **")
             return
-        elif args_list[0] not in HBNBCommand.classes:
+        elif arg_list[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        elif len(args_list) == 1:
+        elif len(arg_list) == 1:
             new_instance = HBNBCommand.classes[args]()
         else:
             instances = {}
-            for i in args_list[1:]:
+            for i in arg_list[1:]:
                 i = i.split("=")
                 name = i[0]
                 value = None
@@ -139,7 +138,7 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     value = i[1][1:-1].replace('_', ' ')
                 instances[name] = value
-            new_instance = HBNBCommand.classes[args_list[0]](**instances)
+            new_instance = HBNBCommand.classes[arg_list[0]](**instances)
         storage.new(new_instance)
         print(new_instance.id)
         storage.save()
@@ -218,8 +217,8 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
         print_list = []
-
         print('[', end="")
+
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
@@ -305,7 +304,7 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] !=  ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
             if args[2] and args[2][0] == '\"':
