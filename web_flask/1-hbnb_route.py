@@ -13,9 +13,10 @@ def index():
     """Handles request directed to root path"""
     return ("Hello HBNB!")
 
-@app.route('/hbnb', strict_slashes=False)
+
+@app.route("/hbnb", strict_slashes=False)
 def hbnb():
-    """Handles request directed to hbnb"""
+    """Handles request directed to the path /hbnb"""
     return ("HBNB")
 
 
