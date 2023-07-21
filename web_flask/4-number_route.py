@@ -36,7 +36,7 @@ def python_path(text):
     return ("Python {}".format(text.replace('_', ' ')))
 
 
-@app.route("/number/<int:n>")
+@app.route("/number/<int:n>", strict_slashes=False)
 def number_path(n):
     """
     Handles the request and the arguments, also ensuring the argument
