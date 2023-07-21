@@ -17,9 +17,6 @@ class FileStorage:
                 model_name = model.split(".")[0]
                 if model_name == obj_name:
                     ret[model] = FileStorage.__objects[model]
-            for obj in ret:
-                if "__class__" in ret[obj]:
-                    del (ret[obj]["__class__"])
             return (ret)
         return (FileStorage.__objects)
 
