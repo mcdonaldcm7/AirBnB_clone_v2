@@ -1,22 +1,30 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
 import os
-from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String
-from sqlalchemy.orm import relationship
 
 
-class State(BaseModel, Base):
-    """ State class """
-    __tablename__ = "states"
-    name = Column(String(128), nullable=False)
-    cities = None
+if os.getenv("HBNB_TYPE_STORAGE") == "db":
+    from models.base_model import BaseModel, Base
+    from sqlalchemy import Column, String
+    from sqlalchemy.orm import relationship
 
-    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+    class State(BaseModel, Base):
+        """ State class """
+        __tablename__ = "states"
+        name = Column(String(128), nullable=False)
         cities = relationship(
                 "City", back_populates="state", cascade="all, delete"
                 )
-    else:
+else:
+    from models.base_model import BaseModel
+
+    class State(BaseModel):
+        def __init__(self, *args, **kwargs):
+            if kwargs:
+                for key, value in kwargs.items():
+                    setattr(self, key, value)
+            super().__init__(*args, **kwargs)
+
         @property
         def cities(self):
             """
@@ -30,9 +38,3 @@ class State(BaseModel, Base):
                     if state.state_id == self.id
                     ]
             return (state_city)
-
-    def __init__(self, *args, **kwargs):
-        if kwargs:
-            for key, value in kwargs.items():
-                setattr(self, key, value)
-        super().__init__(*args, **kwargs)
