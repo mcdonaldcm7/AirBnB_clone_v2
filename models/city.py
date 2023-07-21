@@ -19,6 +19,9 @@ else:
     from models.base_model import BaseModel
 
     class City(BaseModel):
+        state_id = ""
+        name = ""
+
         """ The city class, contains state ID and name """
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
