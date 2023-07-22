@@ -5,7 +5,6 @@ import os
 
 if os.getenv("HBNB_TYPE_STORAGE") == "db":
     from models.base_model import BaseModel, Base
-    from models.state import State
     from sqlalchemy import Column, String, ForeignKey
     from sqlalchemy.orm import relationship
 
@@ -15,6 +14,9 @@ if os.getenv("HBNB_TYPE_STORAGE") == "db":
         state_id = Column(String(60), ForeignKey("states.id"), nullable=True)
         name = Column(String(128), nullable=False)
         state = relationship("State", back_populates="cities")
+        places = relationship(
+                "Place", back_populates="cities", cascade="all, delete"
+                )
 else:
     from models.base_model import BaseModel
 
