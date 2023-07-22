@@ -6,8 +6,8 @@
 	<BODY>
 		<H1>States</H1>
 		<UL>
-			{% for item in states %}
-			<LI>{{ item.split(".")[1] }}: <B>{{ states[item]["name"] }}</B></LI>
+			{% for k, v in states.items()|sort(attribute="1.name") %}
+			<LI>{{ k.split(".")[1] }}: <B>{{ v.name }}</B></LI>
 			{% endfor %}
 		</UL>
 	</BODY>
