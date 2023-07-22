@@ -20,7 +20,7 @@ class DBStorage:
     def __init__(self):
         user = os.getenv("HBNB_MYSQL_USER")
         psswd = os.getenv("HBNB_MYSQL_PWD")
-        host = "localhost" #os.getenv("HBNB_MYSQL_HOST")
+        host = os.getenv("HBNB_MYSQL_HOST") #localhost
         db = os.getenv("HBNB_MYSQL_DB")
         is_test = True if os.getenv("HBNB_ENV") == "test" else False
         self.__engine = create_engine(
@@ -47,11 +47,16 @@ class DBStorage:
                 }
         dictionary = {}
         if cls is None:
-            objects = self.__session.query(
-                    State, City, User, Place, Amenity, Review).all()
-            for obj in objects:
-                key = "{}.{}".format(obj.name, type(obj).__name__)
-                dictionary[key] = obj
+            for class_name in classes:                
+                objects = self.__session.query(classes[class_name]).all()
+                printed = False
+                for obj in objects:
+                    if not printed:
+                        print("---------In Loop-----------")
+                    printed = True
+                    key = "{}.{}".format(type(obj).__name__, obj.id)
+                    print("Key is {}".format(key))
+                    dictionary[key] = obj
         else:
             objects = self.__session.query(classes[cls]).all()
             for obj in objects:
@@ -77,11 +82,15 @@ class DBStorage:
         from models.state import State
         from models.city import City
         from models.user import User
-        from models.place import Place
         from models.review import Review
+        from models.place import Place
         from models.base_model import Base
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(
                 bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
+
+    def close(self):
+        """Closes the class session"""
+        DBStorage.__session.close()
