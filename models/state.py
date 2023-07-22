@@ -17,6 +17,7 @@ if os.getenv("HBNB_TYPE_STORAGE") == "db":
                 )
 else:
     from models.base_model import BaseModel
+    from models.city import City
 
     class State(BaseModel):
         def __init__(self, *args, **kwargs):
@@ -32,9 +33,9 @@ else:
             State.id
             """
             from models import storage
-            state_instances = storage.all(State)
-            state_city = [
-                    state for state in state_instances.values()
-                    if state.state_id == self.id
+            city_instances = storage.all(City)
+            city_list = [
+                    city for city in city_instances.values()
+                    if city.state_id == self.id
                     ]
-            return (state_city)
+            return (city_list)
