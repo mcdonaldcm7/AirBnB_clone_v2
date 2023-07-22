@@ -20,9 +20,8 @@ class DBStorage:
     def __init__(self):
         user = os.getenv("HBNB_MYSQL_USER")
         psswd = os.getenv("HBNB_MYSQL_PWD")
-        host = os.getenv("HBNB_MYSQL_HOST") #localhost
+        host = os.getenv("HBNB_MYSQL_HOST")
         db = os.getenv("HBNB_MYSQL_DB")
-        is_test = True if os.getenv("HBNB_ENV") == "test" else False
         self.__engine = create_engine(
                 "mysql+mysqldb://{}:{}@localhost/{}".format(
                     user, psswd, db),
@@ -47,15 +46,10 @@ class DBStorage:
                 }
         dictionary = {}
         if cls is None:
-            for class_name in classes:                
+            for class_name in classes:
                 objects = self.__session.query(classes[class_name]).all()
-                printed = False
                 for obj in objects:
-                    if not printed:
-                        print("---------In Loop-----------")
-                    printed = True
                     key = "{}.{}".format(type(obj).__name__, obj.id)
-                    print("Key is {}".format(key))
                     dictionary[key] = obj
         else:
             objects = self.__session.query(classes[cls]).all()
@@ -90,6 +84,8 @@ class DBStorage:
                 bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
+        if os.getenv("HBNB_ENV") == "test":
+            Base.metadata.drop_all()
 
     def close(self):
         """Closes the class session"""
