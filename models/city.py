@@ -11,6 +11,7 @@ if os.getenv("HBNB_TYPE_STORAGE") == "db":
     class City(BaseModel, Base):
         """ The city class, contains state ID and name """
         __tablename__ = "cities"
+        __table_args__ = {"mysql_default_charset": "latin1"}
         state_id = Column(String(60), ForeignKey("states.id"), nullable=True)
         name = Column(String(128), nullable=False)
         state = relationship("State", back_populates="cities")

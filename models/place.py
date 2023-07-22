@@ -8,9 +8,10 @@ if os.getenv("HBNB_TYPE_STORAGE") == "db":
     from sqlalchemy import Column, String, Integer, Float, ForeignKey
     from sqlalchemy.orm import relationship
 
-    class Place(BaseModel):
+    class Place(BaseModel, Base):
         """ A place to stay """
         __tablename__ = "places"
+        __table_args__ = {"mysql_default_charset": "latin1"}
         city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
         user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
         name = Column(String(128), nullable=False)
@@ -24,7 +25,7 @@ if os.getenv("HBNB_TYPE_STORAGE") == "db":
         amenity_ids = []
         user = relationship("User", back_populates="places")
         cities = relationship("City", back_populates="places")
-        review = relationship(
+        reviews = relationship(
                 "Review", back_populates="place", cascade="all, delete"
                 )
 else:
