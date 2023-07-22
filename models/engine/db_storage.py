@@ -52,7 +52,11 @@ class DBStorage:
                     key = "{}.{}".format(type(obj).__name__, obj.id)
                     dictionary[key] = obj
         else:
-            objects = self.__session.query(classes[cls]).all()
+            class_name = None
+            for k in classes:
+                if classes[k] == cls:
+                    class_name = k
+            objects = self.__session.query(classes[class_name]).all()
             for obj in objects:
                 key = "{}.{}".format(type(obj).__name__, obj.id)
                 dictionary[key] = obj
@@ -85,8 +89,9 @@ class DBStorage:
         Session = scoped_session(session_factory)
         self.__session = Session()
         if os.getenv("HBNB_ENV") == "test":
+            print("Dropped all tables")
             Base.metadata.drop_all()
 
     def close(self):
-        """Closes the class session"""
-        DBStorage.__session.close()
+        """Closes the session"""
+        self.__session.close()
