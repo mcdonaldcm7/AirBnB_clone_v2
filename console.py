@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ Console Module """
+import os
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -218,18 +219,34 @@ class HBNBCommand(cmd.Cmd):
         """ Shows all objects, or all objects of a class"""
         print_list = []
         print('[', end="")
-
+        dictionary = {}
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(v)
+            if os.getenv("HBNB_TYPE_STORAGE") == "db":
+                for k, v in storage.all(cls=args).items():
+                    dictionary = v.to_dict()
+                    if "__class__" in dictionary:
+                        del (dictionary["__class__"])
+                    print_list.append("[{}] ({}) {}".format(
+                        k.split(".")[0], k.split(".")[1], dictionary))
+            else:
+                for k, v in storage._FiileStorage__objects.items():
+                    if k.split('.')[0] == args:
+                        print_list.append(v)
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(v)
+            if os.getenv("HBNB_TYPE_STORAGE" == "db"):
+                for k, v in storage.all().items():
+                    dictionary = v.to_dict()
+                    if "__class__" in dictionary:
+                        del (dictionary["__class__"])
+                    print_list.append("[{}] ({}) {}".format(
+                        k.split(".")[0], k.split(".")[1], dictionary))
+            else:
+                for k, v in storage._FileStorage__objects.items():
+                    print_list.append(v)
         first = True
         for i in print_list:
             if not first:
